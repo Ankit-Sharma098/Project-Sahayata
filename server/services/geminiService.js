@@ -1,22 +1,25 @@
-export const analyzePollution = async () => {
+export const analyzePollution = async (imageUrl) => {
 
-    return {
+  // Temporary AI Mock
+  // Later Gemini API se replace karenge
 
-        predictedCategory: "Industrial Pollution",
+  return {
 
-        confidence: 97,
+    predictedCategory: "Industrial Smoke",
 
-        severity: "Critical",
+    confidence: 98,
 
-        recommendation:
-            "Deploy Water Mist Cannon",
+    severity: "Critical",
 
-        healthRisk:
-            "Avoid Outdoor Activities",
+    recommendation:
+      "Deploy Water Mist Cannon and restrict heavy vehicles.",
 
-        suggestedAuthority:
-            "Municipal Corporation"
+    healthRisk:
+      "High risk for children, elderly and asthma patients.",
 
-    };
+    suggestedAuthority:
+      "Municipal Corporation & Pollution Control Board",
+
+  };
 
 };

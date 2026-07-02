@@ -52,7 +52,7 @@ export const createAirReport = async (req, res) => {
     );
 
     // AI Analysis
-    const aiAnalysis = await analyzePollution();
+const aiAnalysis = await analyzePollution(imageUrl);
 
     // Pollution Impact Score
     const impactScore = calculateImpactScore(
