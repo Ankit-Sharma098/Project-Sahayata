@@ -21,8 +21,15 @@ export const protect = async (req, res, next) => {
       });
     }
 
+    // Debug Logs
+    console.log("Authorization Header:", req.headers.authorization);
+    console.log("Token:", token);
+    console.log("JWT Secret:", process.env.JWT_SECRET);
+
     // Verify Token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    console.log("Decoded Token:", decoded);
 
     // Find User
     req.user = await User.findById(decoded.id).select("-password");
@@ -37,9 +44,11 @@ export const protect = async (req, res, next) => {
     next();
 
   } catch (error) {
+    console.log("JWT Error:", error);
+
     return res.status(401).json({
       success: false,
-      message: "Invalid or Expired Token",
+      message: error.message,
     });
   }
 };
