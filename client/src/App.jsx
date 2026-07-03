@@ -1,7 +1,13 @@
 function App() {
   return (
-    <div>
-      <h1>Project Sahayata</h1>
+    <div className="h-screen bg-slate-950 text-white flex justify-center items-center">
+
+      <h1 className="text-7xl font-bold">
+
+        Project Sahayata
+
+      </h1>
+
     </div>
   );
 }

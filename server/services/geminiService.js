@@ -1,25 +1,87 @@
+import { GoogleGenAI } from "@google/genai";
+import axios from "axios";
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
+});
+
 export const analyzePollution = async (imageUrl) => {
+  try {
 
-  // Temporary AI Mock
-  // Later Gemini API se replace karenge
+    const image = await axios.get(imageUrl, {
+      responseType: "arraybuffer",
+    });
 
-  return {
+    const base64 = Buffer.from(image.data).toString("base64");
 
-    predictedCategory: "Industrial Smoke",
+    const response = await ai.models.generateContent({
+      model: "gemini-2.5-flash",
 
-    confidence: 98,
+      contents: [
+        {
+          role: "user",
 
-    severity: "Critical",
+          parts: [
 
-    recommendation:
-      "Deploy Water Mist Cannon and restrict heavy vehicles.",
+            {
+              inlineData: {
+                mimeType: "image/webp",
+                data: base64,
+              },
+            },
 
-    healthRisk:
-      "High risk for children, elderly and asthma patients.",
+            {
+              text: `
+You are an environmental pollution expert.
 
-    suggestedAuthority:
-      "Municipal Corporation & Pollution Control Board",
+Analyze this pollution image.
 
-  };
+Return ONLY JSON.
 
+{
+"predictedCategory":"",
+"confidence":95,
+"severity":"",
+"recommendation":"",
+"healthRisk":"",
+"suggestedAuthority":""
+}
+`,
+            },
+
+          ],
+        },
+      ],
+    });
+
+    let result = response.text;
+
+    result = result
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    return JSON.parse(result);
+
+  } catch (err) {
+
+    console.log("Gemini Error", err);
+
+    return {
+
+      predictedCategory: "Other",
+
+      confidence: 0,
+
+      severity: "Low",
+
+      recommendation: "No recommendation",
+
+      healthRisk: "Low",
+
+      suggestedAuthority: "Municipality",
+
+    };
+
+  }
 };
