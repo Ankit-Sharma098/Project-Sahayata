@@ -1,7 +1,9 @@
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 
+// ==========================
 // Generate JWT Token
+// ==========================
 const generateToken = (userId) => {
   return jwt.sign(
     { id: userId },
@@ -17,10 +19,21 @@ const generateToken = (userId) => {
 // ==========================
 export const registerUser = async (req, res) => {
   try {
-    const { fullName, email, password, phone } = req.body;
+    const {
+      fullName,
+      email,
+      password,
+      phone,
+      role,
+    } = req.body;
 
     // Validation
-    if (!fullName || !email || !password) {
+    if (
+      !fullName ||
+      !email ||
+      !password ||
+      !role
+    ) {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields",
@@ -28,7 +41,9 @@ export const registerUser = async (req, res) => {
     }
 
     // Check Existing User
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({
+      email,
+    });
 
     if (existingUser) {
       return res.status(400).json({
@@ -43,12 +58,15 @@ export const registerUser = async (req, res) => {
       email,
       password,
       phone,
+      role,
     });
 
-    // Remove Password from Response
-    const createdUser = await User.findById(user._id).select("-password");
+    // Remove Password
+    const createdUser = await User.findById(
+      user._id
+    ).select("-password");
 
-    // Generate JWT Token
+    // Generate Token
     const token = generateToken(user._id);
 
     res.status(201).json({
@@ -59,10 +77,12 @@ export const registerUser = async (req, res) => {
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -71,9 +91,9 @@ export const registerUser = async (req, res) => {
 // ==========================
 export const loginUser = async (req, res) => {
   try {
+
     const { email, password } = req.body;
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -81,8 +101,9 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Find User
-    const user = await User.findOne({ email });
+    const user = await User.findOne({
+      email,
+    });
 
     if (!user) {
       return res.status(400).json({
@@ -91,8 +112,8 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Compare Password
-    const isMatch = await user.comparePassword(password);
+    const isMatch =
+      await user.comparePassword(password);
 
     if (!isMatch) {
       return res.status(400).json({
@@ -101,10 +122,11 @@ export const loginUser = async (req, res) => {
       });
     }
 
-    // Remove Password from Response
-    const userWithoutPassword = await User.findById(user._id).select("-password");
+    const userWithoutPassword =
+      await User.findById(user._id).select(
+        "-password"
+      );
 
-    // Generate JWT Token
     const token = generateToken(user._id);
 
     res.status(200).json({
@@ -115,10 +137,12 @@ export const loginUser = async (req, res) => {
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
@@ -127,27 +151,37 @@ export const loginUser = async (req, res) => {
 // ==========================
 export const getProfile = async (req, res) => {
   try {
+
     res.status(200).json({
       success: true,
       user: req.user,
     });
+
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
-
 
 // ==========================
 // Update Profile
 // ==========================
 export const updateProfile = async (req, res) => {
   try {
-    const { fullName, phone, location } = req.body;
 
-    const user = await User.findById(req.user._id);
+    const {
+      fullName,
+      phone,
+      location,
+    } = req.body;
+
+    const user = await User.findById(
+      req.user._id
+    );
 
     if (!user) {
       return res.status(404).json({
@@ -156,68 +190,97 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    user.fullName = fullName || user.fullName;
-    user.phone = phone || user.phone;
-    user.location = location || user.location;
+    user.fullName =
+      fullName || user.fullName;
+
+    user.phone =
+      phone || user.phone;
+
+    user.location =
+      location || user.location;
 
     await user.save();
 
-    const updatedUser = await User.findById(user._id).select("-password");
+    const updatedUser =
+      await User.findById(user._id).select(
+        "-password"
+      );
 
     res.status(200).json({
       success: true,
-      message: "Profile Updated Successfully",
+      message:
+        "Profile Updated Successfully",
       user: updatedUser,
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };
 
 // ==========================
 // Change Password
 // ==========================
-export const changePassword = async (req, res) => {
+export const changePassword = async (
+  req,
+  res
+) => {
   try {
-    const { currentPassword, newPassword } = req.body;
 
-    if (!currentPassword || !newPassword) {
+    const {
+      currentPassword,
+      newPassword,
+    } = req.body;
+
+    if (
+      !currentPassword ||
+      !newPassword
+    ) {
       return res.status(400).json({
         success: false,
-        message: "Please enter both passwords",
+        message:
+          "Please enter both passwords",
       });
     }
 
-    const user = await User.findById(req.user._id);
+    const user = await User.findById(
+      req.user._id
+    );
 
-    // Check current password
-    const isMatch = await user.comparePassword(currentPassword);
+    const isMatch =
+      await user.comparePassword(
+        currentPassword
+      );
 
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Current password is incorrect",
+        message:
+          "Current password is incorrect",
       });
     }
 
-    // Update password
     user.password = newPassword;
 
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: "Password Changed Successfully",
+      message:
+        "Password Changed Successfully",
     });
 
   } catch (error) {
+
     res.status(500).json({
       success: false,
       message: error.message,
     });
+
   }
 };

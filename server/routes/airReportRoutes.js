@@ -8,12 +8,13 @@ import {
   getSingleAirReport,
   updateAirReport,
   deleteAirReport,
+  getMyAirReports,
 } from "../controllers/airReportController.js";
 
 const router = express.Router();
 
 // =====================================
-// Create Air Report (Image Upload)
+// Create Air Report
 // =====================================
 router.post(
   "/",
@@ -25,21 +26,46 @@ router.post(
 // =====================================
 // Get All Air Reports
 // =====================================
-router.get("/", protect, getAllAirReports);
+router.get(
+  "/",
+  protect,
+  getAllAirReports
+);
+
+// =====================================
+// Get My Air Reports
+// =====================================
+router.get(
+  "/my",
+  protect,
+  getMyAirReports
+);
 
 // =====================================
 // Get Single Air Report
 // =====================================
-router.get("/:id", protect, getSingleAirReport);
+router.get(
+  "/:id",
+  protect,
+  getSingleAirReport
+);
 
 // =====================================
 // Update Air Report
 // =====================================
-router.put("/:id", protect, updateAirReport);
+router.put(
+  "/:id",
+  protect,
+  updateAirReport
+);
 
 // =====================================
 // Delete Air Report
 // =====================================
-router.delete("/:id", protect, deleteAirReport);
+router.delete(
+  "/:id",
+  protect,
+  deleteAirReport
+);
 
 export default router;

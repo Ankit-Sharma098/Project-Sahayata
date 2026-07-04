@@ -14,7 +14,6 @@ import { useAuth } from "../context/AuthContext";
 
 function Sidebar() {
   const navigate = useNavigate();
-
   const { logout } = useAuth();
 
   const handleLogout = () => {
@@ -61,13 +60,15 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 h-screen w-72 border-r border-slate-800 bg-slate-950 p-6">
+    <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-slate-800 bg-slate-950 p-6">
 
+      {/* Logo */}
       <h1 className="mb-10 text-3xl font-bold text-emerald-400">
         Project Sahayata
       </h1>
 
-      <nav className="space-y-2">
+      {/* Navigation */}
+      <nav className="flex-1 space-y-2">
 
         {links.map((item) => (
           <NavLink
@@ -88,13 +89,15 @@ function Sidebar() {
 
       </nav>
 
+      {/* Logout */}
       <button
         onClick={handleLogout}
-        className="absolute bottom-10 flex w-[220px] items-center justify-center gap-2 rounded-xl bg-red-600 py-3 text-white hover:bg-red-700"
+        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 py-3 text-white transition hover:bg-red-700"
       >
         <LogOut size={18} />
         Logout
       </button>
+
     </aside>
   );
 }

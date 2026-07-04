@@ -5,7 +5,6 @@ import { registerUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
 function Register() {
-
   const navigate = useNavigate();
 
   const { setToken, setUser } = useAuth();
@@ -17,40 +16,38 @@ function Register() {
     email: "",
     password: "",
     phone: "",
+    role: "Citizen",
   });
 
   const handleChange = (e) => {
-
     setForm({
       ...form,
       [e.target.name]: e.target.value,
     });
-
   };
 
   const handleRegister = async () => {
-
     if (
       !form.fullName ||
       !form.email ||
       !form.password
     ) {
-      return toast.error("Please fill all required fields");
+      return toast.error(
+        "Please fill all required fields"
+      );
     }
 
     try {
-
       setLoading(true);
 
       const data = await registerUser(form);
 
       setToken(data.token);
-
       setUser(data.user);
 
       toast.success(data.message);
 
-      navigate("/Dashboard");
+      navigate("/dashboard");
 
     } catch (err) {
 
@@ -64,20 +61,18 @@ function Register() {
       setLoading(false);
 
     }
-
   };
 
   return (
-
     <div className="flex min-h-screen items-center justify-center bg-slate-950 px-5">
 
       <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-8">
 
         <h1 className="mb-8 text-center text-4xl font-bold text-white">
-
           Create Account
-
         </h1>
+
+        {/* Full Name */}
 
         <input
           name="fullName"
@@ -86,6 +81,8 @@ function Register() {
           onChange={handleChange}
           className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
         />
+
+        {/* Email */}
 
         <input
           name="email"
@@ -96,13 +93,38 @@ function Register() {
           className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
         />
 
+        {/* Phone */}
+
         <input
           name="phone"
-          placeholder="Phone"
+          placeholder="Phone Number"
           value={form.phone}
           onChange={handleChange}
           className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
         />
+
+        {/* Role */}
+
+        <select
+          name="role"
+          value={form.role}
+          onChange={handleChange}
+          className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
+        >
+          <option value="Citizen">
+            Citizen
+          </option>
+
+          <option value="Municipality">
+            Municipality
+          </option>
+
+          <option value="Admin">
+            Admin
+          </option>
+        </select>
+
+        {/* Password */}
 
         <input
           name="password"
@@ -113,24 +135,19 @@ function Register() {
           className="mb-6 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
         />
 
+        {/* Register Button */}
+
         <button
           onClick={handleRegister}
           disabled={loading}
-          className="w-full rounded-xl bg-emerald-500 py-4 font-semibold text-white hover:bg-emerald-600"
+          className="w-full rounded-xl bg-emerald-500 py-4 font-semibold text-white transition hover:bg-emerald-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-
-          {
-            loading ?
-
-            "Creating Account..."
-
-            :
-
-            "Register"
-
-          }
-
+          {loading
+            ? "Creating Account..."
+            : "Register"}
         </button>
+
+        {/* Login Link */}
 
         <p className="mt-6 text-center text-slate-400">
 
@@ -138,11 +155,9 @@ function Register() {
 
           <Link
             to="/login"
-            className="ml-2 text-emerald-400"
+            className="ml-2 text-emerald-400 hover:underline"
           >
-
             Login
-
           </Link>
 
         </p>
@@ -150,9 +165,7 @@ function Register() {
       </div>
 
     </div>
-
   );
-
 }
 
 export default Register;

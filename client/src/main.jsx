@@ -5,6 +5,7 @@ import "./styles/globals.css";
 import { Toaster } from "react-hot-toast";
 import "leaflet/dist/leaflet.css";
 import { AuthProvider } from "./context/AuthContext";
+import "leaflet/dist/leaflet.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

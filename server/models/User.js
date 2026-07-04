@@ -29,10 +29,10 @@ const userSchema = new mongoose.Schema(
     },
 
     role: {
-      type: String,
-      enum: ["user", "volunteer", "ngo", "admin"],
-      default: "user",
-    },
+    type: String,
+    enum: ["Citizen", "Municipality", "Admin"],
+    default: "Citizen",
+  },
 
     profileImage: {
       type: String,

@@ -1,14 +1,31 @@
 import express from "express";
 import { protect } from "../middleware/authMiddleware.js";
-import { updateReportStatus } from "../controllers/municipalityController.js";
-import { authorize } from "../middleware/roleMiddleware.js";
+import { authorizeRoles } from "../middleware/roleMiddleware.js";
+
+import {
+  updateReportStatus,
+  getMunicipalityDashboard,
+} from "../controllers/municipalityController.js";
 
 const router = express.Router();
 
-router.put(
-  "/report/:id",
+// ================================
+// Municipality Dashboard
+// ================================
+router.get(
+  "/dashboard",
   protect,
-  authorize("admin", "ngo", "volunteer"),
+  authorizeRoles("Municipality", "Admin"),
+  getMunicipalityDashboard
+);
+
+// ================================
+// Update Report Status
+// ================================
+router.put(
+  "/status/:id",
+  protect,
+  authorizeRoles("Municipality", "Admin"),
   updateReportStatus
 );
 

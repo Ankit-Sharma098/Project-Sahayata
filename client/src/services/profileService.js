@@ -1,42 +1,20 @@
 import API from "../api/axios";
 
-export const loginUser = async (data) => {
-
-  const res = await API.post(
-    "/auth/login",
-    data
-  );
-
-  return res.data;
-
-};
-
-export const registerUser = async (data) => {
-
-  const res = await API.post(
-    "/auth/register",
-    data
-  );
-
-  return res.data;
-
-};
-
 export const getProfile = async (token) => {
-  const res = await API.get("/auth/profile", {
+  const response = await API.get("/auth/profile", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
-  return res.data;
+  return response.data;
 };
 
 export const updateProfile = async (
   data,
   token
 ) => {
-  const res = await API.put(
+  const response = await API.put(
     "/auth/profile",
     data,
     {
@@ -46,14 +24,14 @@ export const updateProfile = async (
     }
   );
 
-  return res.data;
+  return response.data;
 };
 
 export const changePassword = async (
   data,
   token
 ) => {
-  const res = await API.put(
+  const response = await API.put(
     "/auth/change-password",
     data,
     {
@@ -63,5 +41,5 @@ export const changePassword = async (
     }
   );
 
-  return res.data;
+  return response.data;
 };

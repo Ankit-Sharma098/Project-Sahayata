@@ -12,6 +12,7 @@ import recommendationRoutes from "./routes/recommendationRoutes.js";
 import leaderboardRoutes from "./routes/leaderboardRoutes.js";
 import analyticsRoutes from "./routes/analyticsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import adminRoutes from "./routes/adminRoutes.js";
 
 
 const app = express();
@@ -35,6 +36,10 @@ app.use("/api/analytics", analyticsRoutes);
 app.use(
   "/api/notifications",
   notificationRoutes
+);
+app.use(
+"/api/admin",
+adminRoutes
 );
 
 

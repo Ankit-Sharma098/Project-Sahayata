@@ -37,3 +37,7 @@ export const updateReportStatus = async (req, res) => {
 
   }
 };
+
+export const getMunicipalityDashboard = async (req, res) => {
+
+};

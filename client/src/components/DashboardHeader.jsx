@@ -1,5 +1,6 @@
-import { Bell, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import NotificationBell from "./NotificationBell";
 
 function DashboardHeader() {
   const { user } = useAuth();
@@ -7,6 +8,7 @@ function DashboardHeader() {
   return (
     <header className="mb-10 flex items-center justify-between">
 
+      {/* Left */}
       <div>
 
         <h1 className="text-4xl font-bold text-white">
@@ -22,8 +24,10 @@ function DashboardHeader() {
 
       </div>
 
+      {/* Right */}
       <div className="flex items-center gap-5">
 
+        {/* Search */}
         <div className="flex items-center rounded-xl bg-slate-900 px-4 py-3">
 
           <Search
@@ -32,21 +36,20 @@ function DashboardHeader() {
           />
 
           <input
+            type="text"
             placeholder="Search Reports..."
-            className="bg-transparent text-white outline-none"
+            className="bg-transparent text-white placeholder:text-slate-500 outline-none"
           />
 
         </div>
 
-        <button className="rounded-xl bg-slate-900 p-3 text-white">
+        {/* Notification Bell */}
+        <NotificationBell />
 
-          <Bell size={22} />
+        {/* User Avatar */}
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-lg font-bold text-white">
 
-        </button>
-
-        <div className="rounded-xl bg-emerald-600 px-5 py-3 text-white">
-
-          {user?.fullName?.charAt(0) || "U"}
+          {user?.fullName?.charAt(0).toUpperCase() || "U"}
 
         </div>
 

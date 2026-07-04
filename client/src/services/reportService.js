@@ -135,3 +135,24 @@ export const deleteReport = async (id, token) => {
     );
   }
 };
+
+// ==========================
+// Search Reports
+// ==========================
+
+export const searchReports = async (
+  keyword,
+  token
+) => {
+
+  const response = await API.get(
+    `/air-report?search=${keyword}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

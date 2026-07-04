@@ -7,18 +7,27 @@ import {
   Wind,
   MapPinned,
   Activity,
+  Search,
 } from "lucide-react";
-import { getDashboardAnalytics } from "../services/dashboardService";
-import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
-import Sidebar from "../components/Sidebar";
-import DashboardHeader from "../components/DashboardHeader";
+
+import { useAuth } from "../context/AuthContext";
+import { getDashboardAnalytics } from "../services/dashboardService";
+import { getReports } from "../services/reportService";
+
+import DashboardLayout from "../layouts/DashboardLayout";
 import AQIChart from "../components/AQIChart";
 import StatusChart from "../components/StatusChart";
 import RecentReportsTable from "../components/RecentReportTable";
+import PollutionMap from "../components/PollutionMap";
+import AnalyticsChart from "../components/AnalyticsChart";
 
 function Dashboard() {
-  const { token, user } = useAuth();
+  const { token } = useAuth();
+
+  const [search, setSearch] = useState("");
+
+  const [reports, setReports] = useState([]);
 
   const [loading, setLoading] = useState(true);
 
@@ -34,8 +43,10 @@ function Dashboard() {
 
   useEffect(() => {
     loadDashboard();
+    loadReports();
   }, []);
 
+  // Dashboard Analytics
   const loadDashboard = async () => {
     try {
       const data = await getDashboardAnalytics(token);
@@ -43,10 +54,22 @@ function Dashboard() {
       setAnalytics(data.analytics);
     } catch (err) {
       toast.error(
-        err.response?.data?.message || "Failed to load dashboard"
+        err.response?.data?.message ||
+          "Failed to load dashboard"
       );
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Reports
+  const loadReports = async () => {
+    try {
+      const data = await getReports(token);
+
+      setReports(data.reports);
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -85,31 +108,49 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-white text-2xl">
+      <div className="flex min-h-screen items-center justify-center bg-slate-950 text-2xl text-white">
         Loading Dashboard...
       </div>
     );
   }
 
   return (
-  <>
-    <Sidebar />
+    <DashboardLayout>
 
-    <div className="ml-72 min-h-screen bg-slate-950 p-10">
+      {/* Search */}
+      <div className="mb-8 flex items-center rounded-2xl bg-slate-900 px-5 py-4">
 
-      {/* Dashboard Header */}
-      <DashboardHeader user={user} />
+        <Search
+          size={20}
+          className="mr-3 text-slate-500"
+        />
+
+        <input
+          type="text"
+          placeholder="Search Reports..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="w-full bg-transparent text-white placeholder:text-slate-500 outline-none"
+        />
+
+      </div>
 
       {/* Analytics Cards */}
-      <div className="mt-10 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+
         {cards.map((card, index) => (
+
           <div
             key={index}
             className="rounded-3xl border border-slate-800 bg-slate-900 p-6 transition-all duration-300 hover:border-emerald-500 hover:shadow-lg hover:shadow-emerald-500/10"
           >
+
             <div className="flex items-center justify-between">
 
               <div>
+
                 <p className="text-slate-400">
                   {card.title}
                 </p>
@@ -117,6 +158,7 @@ function Dashboard() {
                 <h2 className="mt-3 text-4xl font-bold text-white">
                   {card.value}
                 </h2>
+
               </div>
 
               <div className="rounded-2xl bg-emerald-500/10 p-4 text-emerald-400">
@@ -124,8 +166,11 @@ function Dashboard() {
               </div>
 
             </div>
+
           </div>
+
         ))}
+
       </div>
 
       {/* Highest Impact Area */}
@@ -150,26 +195,40 @@ function Dashboard() {
 
       </div>
 
+      {/* Pollution Map */}
+      <div className="mt-10">
+
+        <PollutionMap reports={reports} />
+
+      </div>
+
       {/* Charts */}
       <div className="mt-10 grid gap-8 lg:grid-cols-2">
 
-        <AQIChart />
+        <AQIChart reports={reports} />
 
-        <StatusChart />
+        <StatusChart reports={reports} />
 
       </div>
- {/* Recent Reports */}
 
+      {/* Analytics Chart */}
       <div className="mt-10">
 
-        <RecentReportsTable />
+        <AnalyticsChart reports={reports} />
 
       </div>
 
+      {/* Recent Reports */}
+      <div className="mt-10">
 
-    </div>
-  </>
-);
+        <RecentReportsTable
+          search={search}
+        />
+
+      </div>
+
+    </DashboardLayout>
+  );
 }
 
 export default Dashboard;

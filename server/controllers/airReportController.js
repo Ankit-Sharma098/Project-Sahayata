@@ -4,6 +4,7 @@ import {
   getSingleAirReportService,
   updateAirReportService,
   deleteAirReportService,
+  getMyAirReportsService,
 } from "../services/airReportService.js";
 
 import { getWeatherData } from "../services/weatherService.js";
@@ -194,5 +195,29 @@ export const deleteAirReport = async (req, res) => {
       success: false,
       message: error.message,
     });
+  }
+};
+
+// ======================================
+// Get My Air Reports
+// ======================================
+
+export const getMyAirReports = async (req, res) => {
+  try {
+    const reports = await getMyAirReportsService(req.user._id);
+
+    res.status(200).json({
+      success: true,
+      total: reports.length,
+      reports,
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
   }
 };

@@ -1,12 +1,31 @@
 import AirReport from "../models/AirReport.js";
 
+// ==========================
+// Create Air Report
+// ==========================
+
 export const createAirReportService = async (data) => {
-  const report = await AirReport.create(data);
-  return report;
+  return await AirReport.create(data);
 };
+
+// ==========================
+// Get All Air Reports
+// ==========================
 
 export const getAllAirReportsService = async () => {
   return await AirReport.find()
+    .populate("user", "fullName email")
+    .sort({ createdAt: -1 });
+};
+
+// ==========================
+// Get My Air Reports
+// ==========================
+
+export const getMyAirReportsService = async (userId) => {
+  return await AirReport.find({
+    user: userId,
+  })
     .populate("user", "fullName email")
     .sort({ createdAt: -1 });
 };
@@ -25,14 +44,10 @@ export const getSingleAirReportService = async (id) => {
 // ==========================
 
 export const updateAirReportService = async (id, data) => {
-  return await AirReport.findByIdAndUpdate(
-    id,
-    data,
-    {
-      new: true,
-      runValidators: true,
-    }
-  );
+  return await AirReport.findByIdAndUpdate(id, data, {
+    new: true,
+    runValidators: true,
+  });
 };
 
 // ==========================
