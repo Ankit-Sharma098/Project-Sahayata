@@ -4,7 +4,7 @@ function Footer() {
       style={{
         textAlign: "center",
         padding: "40px",
-        background: "#111827",
+        background: "#2c5fcd",
       }}
     >
       © 2026 Project Sahayata

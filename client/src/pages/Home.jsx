@@ -1,17 +1,22 @@
 import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
-import Stats from "../components/Stats";
+import LiveStats from "../components/LiveStats";
 import Features from "../components/Features";
-import Footer from "../components/Footer";
+import HowItWorks from "../components/HowItWorks";
+import RecentReports from "../components/RecentReports";
 
 function Home() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <Stats />
-      <Features />
-      <Footer />
+
+      <main className="bg-slate-950">
+        <Hero />
+        <LiveStats />
+        <Features />
+        <HowItWorks />
+        <RecentReports />
+      </main>
     </>
   );
 }
