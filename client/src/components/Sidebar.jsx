@@ -9,6 +9,9 @@ import {
   Brain,
 } from "lucide-react";
 
+import { useEffect, useState } from "react";
+import { getNotifications } from "../services/notificationService";
+
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -16,12 +19,45 @@ function Sidebar() {
   const navigate = useNavigate();
   const { logout } = useAuth();
 
+  const { token } = useAuth();
+
+const [unreadCount, setUnreadCount] =
+  useState(0);
+
   const handleLogout = () => {
     logout();
 
     navigate("/", {
       replace: true,
     });
+
+    useEffect(() => {
+
+  loadNotifications();
+
+}, []);
+
+const loadNotifications = async () => {
+
+  try {
+
+    const data =
+      await getNotifications(token);
+
+    const unread =
+      data.notifications.filter(
+        (n) => !n.isRead
+      ).length;
+
+    setUnreadCount(unread);
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
 
     window.location.reload();
   };
@@ -53,10 +89,26 @@ function Sidebar() {
       path: "/recommendation",
     },
     {
-      name: "Notifications",
-      icon: <Bell size={20} />,
-      path: "/notifications",
-    },
+  name: "Notifications",
+  icon: (
+    <div className="relative">
+
+      <Bell size={20} />
+
+      {unreadCount > 0 && (
+
+        <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs text-white">
+
+          {unreadCount}
+
+        </span>
+
+      )}
+
+    </div>
+  ),
+  path: "/notifications",
+},
     {
       name: "Profile",
       icon: <User size={20} />,

@@ -1,14 +1,14 @@
 import AirReport from "../models/AirReport.js";
+import Notification from "../models/Notification.js";
 
 // ===============================
 // Update Report Status
 // ===============================
 export const updateReportStatus = async (req, res) => {
   try {
-    const { status, remarks } = req.body;
-    const { id } = req.params;
 
-    // Validate status
+    const { status, remarks } = req.body;
+
     if (!status) {
       return res.status(400).json({
         success: false,
@@ -16,8 +16,7 @@ export const updateReportStatus = async (req, res) => {
       });
     }
 
-    // Find report
-    const report = await AirReport.findById(id);
+    const report = await AirReport.findById(req.params.id);
 
     if (!report) {
       return res.status(404).json({
@@ -26,47 +25,50 @@ export const updateReportStatus = async (req, res) => {
       });
     }
 
-    // Update fields
     report.status = status;
-    report.remarks = remarks || report.remarks;
+    report.remarks = remarks || "";
 
-    // Save changes
     await report.save();
 
-    return res.status(200).json({
+    // ===============================
+    // Create Notification
+    // ===============================
+
+    await Notification.create({
+
+      user: report.user,
+
+      report: report._id,
+
+      title: `Report ${status}`,
+
+      message: `Your pollution report "${report.title}" has been ${status} by Municipality.`,
+
+      type: status,
+
+    });
+
+    res.status(200).json({
+
       success: true,
+
       message: "Status Updated Successfully",
+
       report,
+
     });
 
   } catch (error) {
-    console.error("Update Report Status Error:", error);
 
-    return res.status(500).json({
+    console.log(error);
+
+    res.status(500).json({
+
       success: false,
-      message: error.message || "Internal Server Error",
-    });
-  }
-};
 
-// ===============================
-// Municipality Dashboard
-// ===============================
-export const getMunicipalityDashboard = async (req, res) => {
-  try {
-    const reports = await AirReport.find().sort({ createdAt: -1 });
-
-    return res.status(200).json({
-      success: true,
-      reports,
-    });
-
-  } catch (error) {
-    console.error(error);
-
-    return res.status(500).json({
-      success: false,
       message: error.message,
+
     });
+
   }
 };

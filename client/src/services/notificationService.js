@@ -1,20 +1,32 @@
 import API from "../api/axios";
 
+// ==============================
 // Get Notifications
+// ==============================
 export const getNotifications = async (token) => {
-  const response = await API.get("/notifications", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+
+  const response = await API.get(
+    "/notifications",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
   return response.data;
 };
 
-// Mark as Read
-export const markAsRead = async (id, token) => {
+// ==============================
+// Mark Notification As Read
+// ==============================
+export const markNotificationRead = async (
+  id,
+  token
+) => {
+
   const response = await API.put(
-    `/notifications/${id}`,
+    `/notifications/read/${id}`,
     {},
     {
       headers: {
@@ -26,8 +38,14 @@ export const markAsRead = async (id, token) => {
   return response.data;
 };
 
+// ==============================
 // Delete Notification
-export const deleteNotification = async (id, token) => {
+// ==============================
+export const deleteNotification = async (
+  id,
+  token
+) => {
+
   const response = await API.delete(
     `/notifications/${id}`,
     {

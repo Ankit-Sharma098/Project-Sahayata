@@ -8,6 +8,11 @@ const notificationSchema = new mongoose.Schema(
       required: true,
     },
 
+    report: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "AirReport",
+    },
+
     title: {
       type: String,
       required: true,
@@ -21,12 +26,11 @@ const notificationSchema = new mongoose.Schema(
     type: {
       type: String,
       enum: [
-        "Report",
-        "Alert",
-        "System",
-        "Municipality",
+        "Verified",
+        "In Progress",
+        "Resolved",
+        "Rejected",
       ],
-      default: "System",
     },
 
     isRead: {
