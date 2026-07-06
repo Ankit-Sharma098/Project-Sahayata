@@ -4,11 +4,11 @@ import API from "../api/axios";
 export const updateReportStatus = async (
   id,
   status,
-  remarks,
+ remarks,
   token
 ) => {
   const response = await API.put(
-    `/municipality/report/${id}`,
+    `/municipality/status/${id}`,
     {
       status,
       remarks,

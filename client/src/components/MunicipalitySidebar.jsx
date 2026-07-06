@@ -9,6 +9,7 @@ import {
   Bell,
   User,
   LogOut,
+  XCircle,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
@@ -43,7 +44,7 @@ function MunicipalitySidebar() {
       icon: <ClipboardList size={20} />,
     },
     {
-      name: "Verified",
+      name: "Verified Reports",
       path: "/municipality/verified",
       icon: <CheckCircle size={20} />,
     },
@@ -53,7 +54,17 @@ function MunicipalitySidebar() {
       icon: <Clock size={20} />,
     },
     {
-      name: "Critical",
+      name: "Resolved Reports",
+      path: "/municipality/resolved",
+      icon: <CheckCircle size={20} />,
+    },
+    {
+      name: "Rejected Reports",
+      path: "/municipality/rejected",
+      icon: <XCircle size={20} />,
+    },
+    {
+      name: "Critical Reports",
       path: "/municipality/critical",
       icon: <AlertTriangle size={20} />,
     },
@@ -109,7 +120,7 @@ function MunicipalitySidebar() {
 
       <button
         onClick={handleLogout}
-        className="absolute bottom-6 flex w-[225px] items-center justify-center gap-2 rounded-xl bg-red-600 py-3 text-white hover:bg-red-700"
+        className="absolute bottom-6 flex w-[225px] items-center justify-center gap-2 rounded-xl bg-red-600 py-3 text-white transition hover:bg-red-700"
       >
         <LogOut size={18} />
         Logout

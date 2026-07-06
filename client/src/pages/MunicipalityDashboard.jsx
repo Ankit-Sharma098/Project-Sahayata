@@ -60,9 +60,17 @@ function MunicipalityDashboard() {
 
       loadReports();
 
-    } catch (err) {
-      toast.error("Update Failed");
-    }
+    }  catch (err) {
+  console.log(err);
+
+  console.log(err.response);
+
+  console.log(err.response?.data);
+
+  toast.error(
+    err.response?.data?.message || "Update Failed"
+  );
+}
   };
 
   return (

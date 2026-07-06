@@ -15,6 +15,15 @@ import AdminDashboard from "../pages/AdminDashboard";
 
 import RoleProtectedRoute from "./RoleProtectedRoute";
 import Notifications from "../pages/Notification";
+import PendingReports from "../pages/PendingReports";
+import VerifiedReports from "../pages/VerifiedReports";
+import InProgressReports from "../pages/InProgressReports";
+import ResolvedReports from "../pages/ResolvedReports";
+import RejectedReports from "../pages/RejectedReports";
+import MunicipalityReportDetails from "../pages/MunicipalityReportDetails";
+import MunicipalityAnalytics from "../pages/MunicipalityAnalytics";
+import MunicipalityMap from "../pages/MunicipalityMap";
+
 
 function AppRoutes() {
     return (
@@ -149,6 +158,93 @@ function AppRoutes() {
                     }
                 />
 
+                <Route
+                    path="/municipality/pending"
+                    element={
+                        <RoleProtectedRoute
+                            roles={["Municipality", "Admin"]}
+                        >
+                            <PendingReports />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/verified"
+                    element={
+                        <RoleProtectedRoute
+                            roles={["Municipality", "Admin"]}
+                        >
+                            <VerifiedReports />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/progress"
+                    element={
+                        <RoleProtectedRoute
+                            roles={["Municipality", "Admin"]}
+                        >
+                            <InProgressReports />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+
+                <Route
+                    path="/municipality/resolved"
+                    element={
+                        <RoleProtectedRoute roles={["Municipality", "Admin"]}>
+                            <ResolvedReports />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/rejected"
+                    element={
+                        <RoleProtectedRoute roles={["Municipality", "Admin"]}>
+                            <RejectedReports />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/report/:id"
+                    element={
+                        <RoleProtectedRoute
+                            roles={["Municipality", "Admin"]}
+                        >
+                            <MunicipalityReportDetails />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/analytics"
+                    element={
+                        <RoleProtectedRoute
+                            roles={["Municipality", "Admin"]}
+                        >
+                            <MunicipalityAnalytics />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+                <Route
+                    path="/municipality/map"
+                    element={
+                        <RoleProtectedRoute
+                            roles={[
+                                "Municipality",
+                                "Admin",
+                            ]}
+                        >
+                            <MunicipalityMap />
+                        </RoleProtectedRoute>
+                    }
+                />
             </Routes>
         </BrowserRouter>
     );

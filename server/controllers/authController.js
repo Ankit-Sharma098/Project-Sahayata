@@ -19,12 +19,20 @@ const generateToken = (userId) => {
 // ==========================
 export const registerUser = async (req, res) => {
   try {
-   const {
-  fullName,
-  email,
-  password,
-  phone,
-} = req.body;
+
+    console.log("BODY =>", req.body);
+
+    const {
+      fullName,
+      email,
+      password,
+      phone,
+      role,
+    } = req.body;
+
+    console.log("ROLE =>", role);
+
+    // rest of code...
 
     // Validation
     if (
@@ -76,13 +84,14 @@ export const registerUser = async (req, res) => {
     });
 
   } catch (error) {
+  console.error("REGISTER ERROR:", error);
 
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-
-  }
+  res.status(500).json({
+    success: false,
+    message: error.message,
+    error: error.stack,
+  });
+}
 };
 
 // ==========================
