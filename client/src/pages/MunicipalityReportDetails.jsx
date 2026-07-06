@@ -5,6 +5,9 @@ import {
     Popup,
 } from "react-leaflet";
 
+import { ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
@@ -17,6 +20,8 @@ import { useAuth } from "../context/AuthContext";
 function MunicipalityReportDetails() {
     const { id } = useParams();
     const { token } = useAuth();
+
+    const navigate = useNavigate();
 
     const [report, setReport] = useState(null);
     const [remarks, setRemarks] = useState("");
@@ -63,6 +68,18 @@ function MunicipalityReportDetails() {
 
     return (
         <MunicipalityLayout>
+
+            <div className="mb-8">
+
+  <button
+    onClick={() => navigate(-1)}
+    className="mb-6 flex items-center gap-2 rounded-xl bg-slate-800 px-5 py-3 text-white transition hover:bg-slate-700"
+  >
+    <ArrowLeft size={18} />
+    Back
+  </button>
+
+</div>
 
             <h1 className="mb-10 text-5xl font-bold text-white">
                 Report Details

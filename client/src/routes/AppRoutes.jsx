@@ -23,6 +23,7 @@ import RejectedReports from "../pages/RejectedReports";
 import MunicipalityReportDetails from "../pages/MunicipalityReportDetails";
 import MunicipalityAnalytics from "../pages/MunicipalityAnalytics";
 import MunicipalityMap from "../pages/MunicipalityMap";
+import CriticalReports from "../pages/CriticalReports";
 
 
 function AppRoutes() {
@@ -245,6 +246,17 @@ function AppRoutes() {
                         </RoleProtectedRoute>
                     }
                 />
+
+                <Route
+  path="/municipality/critical"
+  element={
+    <RoleProtectedRoute
+      roles={["Municipality", "Admin"]}
+    >
+      <CriticalReports />
+    </RoleProtectedRoute>
+  }
+/>
             </Routes>
         </BrowserRouter>
     );
