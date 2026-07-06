@@ -15,6 +15,7 @@ import notificationRoutes from "./routes/notificationRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 
 
+
 const app = express();
 
 app.use(cors());
@@ -42,6 +43,7 @@ app.use(
 adminRoutes
 );
 
+app.use("/api/leaderboard", leaderboardRoutes);
 
 // Test Route
 app.get("/", (req, res) => {

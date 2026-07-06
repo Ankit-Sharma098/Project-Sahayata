@@ -5,40 +5,57 @@ import AirReport from "../models/AirReport.js";
 // ===============================
 export const getDashboardAnalytics = async (req, res) => {
   try {
-    const totalReports = await AirReport.countDocuments();
 
-    const pendingReports = await AirReport.countDocuments({
-      status: "Pending",
+    // Sirf login user ki reports
+    const reports = await AirReport.find({
+      user: req.user._id,
     });
 
-    const resolvedReports = await AirReport.countDocuments({
-      status: "Resolved",
-    });
+    // Total Reports
+    const totalReports = reports.length;
 
-    const criticalReports = await AirReport.countDocuments({
-      "aiAnalysis.severity": "Critical",
-    });
+    // Pending
+    const pendingReports = reports.filter(
+      (report) => report.status === "Pending"
+    ).length;
 
-    const reports = await AirReport.find();
+    // Resolved
+    const resolvedReports = reports.filter(
+      (report) => report.status === "Resolved"
+    ).length;
 
-    let totalAQI = 0;
+    // Critical
+    const criticalReports = reports.filter(
+      (report) => report.aiAnalysis?.severity === "Critical"
+    ).length;
 
-    reports.forEach((report) => {
-      totalAQI += report.aqiData?.value || 0;
-    });
+    // Average AQI
+    const totalAQI = reports.reduce(
+      (sum, report) => sum + (report.aqiData?.value || 0),
+      0
+    );
 
     const averageAQI =
       reports.length > 0
         ? Math.round(totalAQI / reports.length)
         : 0;
 
-    const highestImpact = await AirReport.findOne().sort({
-      impactScore: -1,
-    });
+    // Highest Impact
+    const highestImpact = reports.reduce(
+      (max, report) => {
+        const score =
+          report.impactScore?.score || 0;
+
+        const maxScore =
+          max?.impactScore?.score || 0;
+
+        return score > maxScore ? report : max;
+      },
+      null
+    );
 
     res.status(200).json({
       success: true,
-
       analytics: {
         totalReports,
         pendingReports,
@@ -50,11 +67,13 @@ export const getDashboardAnalytics = async (req, res) => {
           highestImpact?.location?.address || "N/A",
 
         impactScore:
-          highestImpact?.impactScore || 0,
+          highestImpact?.impactScore?.score || 0,
       },
     });
 
   } catch (error) {
+
+    console.log(error);
 
     res.status(500).json({
       success: false,

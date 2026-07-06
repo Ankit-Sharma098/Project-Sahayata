@@ -3,8 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
-import Report from "../pages/Report";
 import Dashboard from "../pages/Dashboard";
+import Report from "../pages/Report";
 import MyReports from "../pages/MyReports";
 import Profile from "../pages/Profile";
 import ReportDetails from "../pages/ReportDetails";
@@ -12,90 +12,146 @@ import MunicipalityDashboard from "../pages/MunicipalityDashboard";
 import Leaderboard from "../pages/Leaderboard";
 import Recommendation from "../pages/Recommendation";
 import AdminDashboard from "../pages/AdminDashboard";
+
 import RoleProtectedRoute from "./RoleProtectedRoute";
+import Notifications from "../pages/Notification";
 
 function AppRoutes() {
-  return (
-    <BrowserRouter>
-      <Routes>
+    return (
+        <BrowserRouter>
+            <Routes>
 
-        <Route path="/" element={<Home />} />
+                {/* ================= PUBLIC ROUTES ================= */}
 
-        <Route path="/login" element={<Login />} />
+                <Route path="/" element={<Home />} />
 
-        <Route path="/register" element={<Register />} />
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
 
-        <Route path="/dashboard" element={<Dashboard />} />
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
 
-        <Route path="/report" element={<Report />} />
+                <Route
+                    path="/leaderboard"
+                    element={<Leaderboard />}
+                />
 
-        <Route path="/my-reports" element={<MyReports />} />
+                {/* ================= CITIZEN ROUTES ================= */}
 
-        <Route path="/profile" element={<Profile />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        <RoleProtectedRoute roles={["Citizen"]}>
+                            <Dashboard />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/report/:id"
-          element={<ReportDetails />}
-        />
+                <Route
+                    path="/report"
+                    element={
+                        <RoleProtectedRoute roles={["Citizen"]}>
+                            <Report />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/municipality"
-          element={<MunicipalityDashboard />}
-        />
+                <Route
+                    path="/my-reports"
+                    element={
+                        <RoleProtectedRoute roles={["Citizen"]}>
+                            <MyReports />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/leaderboard"
-          element={<Leaderboard />}
-        />
+                <Route
+                    path="/profile"
+                    element={
+                        <RoleProtectedRoute
+                            roles={[
+                                "Citizen",
+                                "Municipality",
+                                "Admin",
+                            ]}
+                        >
+                            <Profile />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/recommendation"
-          element={<Recommendation />}
-        />
+                <Route
+                    path="/report/:id"
+                    element={
+                        <RoleProtectedRoute
+                            roles={[
+                                "Citizen",
+                                "Municipality",
+                                "Admin",
+                            ]}
+                        >
+                            <ReportDetails />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-        <Route
-          path="/admin"
-          element={<AdminDashboard />}
-        />
+                <Route
+                    path="/recommendation"
+                    element={
+                        <RoleProtectedRoute roles={["Citizen"]}>
+                            <Recommendation />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-      </Routes>
+                {/* ================= MUNICIPALITY ================= */}
 
-      <Route
-  path="/dashboard"
-  element={
-    <RoleProtectedRoute
-      roles={["Citizen"]}
-    >
-      <Dashboard />
-    </RoleProtectedRoute>
-  }
-/>
+                <Route
+                    path="/municipality"
+                    element={
+                        <RoleProtectedRoute
+                            roles={[
+                                "Municipality",
+                                "Admin",
+                            ]}
+                        >
+                            <MunicipalityDashboard />
+                        </RoleProtectedRoute>
+                    }
+                />
 
-<Route
-  path="/municipality"
-  element={
-    <RoleProtectedRoute
-      roles={[
-        "Municipality",
-      ]}
-    >
-      <MunicipalityDashboard />
-    </RoleProtectedRoute>
-  }
-/>
+                {/* ================= ADMIN ================= */}
 
-<Route
-  path="/admin"
-  element={
-    <RoleProtectedRoute
-      roles={["Admin"]}
-    >
-      <AdminDashboard />
-    </RoleProtectedRoute>
-  }
-/>
-    </BrowserRouter>
-  );
+                <Route
+                    path="/admin"
+                    element={
+                        <RoleProtectedRoute roles={["Admin"]}>
+                            <AdminDashboard />
+                        </RoleProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/notifications"
+                    element={
+                        <RoleProtectedRoute
+                            roles={[
+                                "Citizen",
+                                "Municipality",
+                                "Admin",
+                            ]}
+                        >
+                            <Notifications />
+                        </RoleProtectedRoute>
+                    }
+                />
+
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 export default AppRoutes;

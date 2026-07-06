@@ -1,11 +1,23 @@
-import { ImagePlus, MapPin } from "lucide-react";
+import {
+  ImagePlus,
+  MapPin,
+  ArrowLeft,
+  RefreshCw,
+  MapPinned,
+  Sparkles,
+} from "lucide-react";
+
 import { useState } from "react";
+
+import { useNavigate } from "react-router-dom";
+
 import { createReport } from "../services/reportService";
 import toast from "react-hot-toast";
 import { reverseGeocode } from "../services/locationService";
 import LocationPicker from "../components/LocationPicker";
 
 function Report() {
+    const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [file, setFile] = useState(null);
     const [image, setImage] = useState(null);
@@ -89,6 +101,22 @@ function Report() {
 
     };
 
+    const refreshForm = () => {
+
+    setFile(null);
+
+    setImage(null);
+
+    setForm({
+        title: "",
+        description: "",
+        category: "Other",
+        address: "",
+        city: "",
+        state: "",
+    });
+
+};
 
 
     const handleSubmit = async () => {
@@ -182,9 +210,53 @@ function Report() {
     return (
         <section className="min-h-screen bg-slate-950 py-28">
             <div className="mx-auto max-w-5xl rounded-3xl border border-slate-800 bg-slate-900 p-10">
-                <h1 className="mb-10 text-center text-5xl font-bold text-white">
-                    Report Pollution
-                </h1>
+               <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+
+    <div>
+
+        <h1 className="text-4xl font-bold text-white">
+            Report Pollution
+        </h1>
+
+        <p className="mt-2 text-slate-400">
+            Report environmental pollution with AI-powered analysis.
+        </p>
+
+    </div>
+
+    <div className="flex flex-wrap gap-3">
+
+        <button
+            onClick={() => navigate("/dashboard")}
+            className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white hover:border-emerald-500"
+        >
+            <ArrowLeft size={18} />
+            Dashboard
+        </button>
+
+        <button
+            onClick={refreshForm}
+            className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-white hover:bg-emerald-700"
+        >
+            <RefreshCw size={18} />
+            Refresh
+        </button>
+
+        <button
+            className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white"
+        >
+            <MapPinned size={18} />
+            Current Location
+        </button>
+
+        <div className="flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-3 text-white">
+            <Sparkles size={18} />
+            AI Ready
+        </div>
+
+    </div>
+
+</div>
 
                 {/* Image Upload */}
 

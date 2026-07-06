@@ -1,5 +1,17 @@
+import {
+  Search,
+  AlertTriangle,
+  CheckCircle,
+  Clock,
+  FileText,
+  MapPin,
+  Wind,
+  User,
+  Calendar,
+} from "lucide-react";
+
 import { useEffect, useState } from "react";
-import DashboardLayout from "../layouts/DashboardLayout";
+import MunicipalityLayout from "../layouts/MunicipalityLayout";
 import { getReports } from "../services/reportService";
 import { useAuth } from "../context/AuthContext";
 import toast from "react-hot-toast";
@@ -9,6 +21,7 @@ function MunicipalityDashboard() {
   const { token } = useAuth();
 
   const [reports, setReports] = useState([]);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     loadReports();
@@ -24,130 +37,324 @@ function MunicipalityDashboard() {
   };
 
   const handleStatus = async (id, status) => {
-  try {
-    await updateReportStatus(
-      id,
-      status,
-      `${status} by Municipality`,
-      token
-    );
+    try {
+      await updateReportStatus(
+        id,
+        status,
+        `${status} by Municipality`,
+        token
+      );
 
-    toast.success(`Report ${status}`);
+      toast.success(`Report ${status}`);
 
-    loadReports();
+      setReports((prev) =>
+        prev.map((item) =>
+          item._id === id
+            ? {
+                ...item,
+                status,
+              }
+            : item
+        )
+      );
 
-  } catch (err) {
+      loadReports();
 
-    toast.error("Update Failed");
-
-  }
-};
+    } catch (err) {
+      toast.error("Update Failed");
+    }
+  };
 
   return (
-    <DashboardLayout>
+    <MunicipalityLayout>
 
-      <h1 className="mb-8 text-4xl font-bold text-white">
-        Municipality Dashboard
-      </h1>
+      {/* Header */}
+
+      <div className="mb-10">
+
+        <h1 className="text-5xl font-bold text-white">
+          Municipality Dashboard
+        </h1>
+
+        <p className="mt-3 text-slate-400">
+          Verify, manage and resolve pollution reports.
+        </p>
+
+      </div>
+
+      {/* Analytics */}
+
+      <div className="mb-10 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+
+          <FileText className="text-emerald-400" />
+
+          <h2 className="mt-5 text-4xl font-bold text-white">
+            {reports.length}
+          </h2>
+
+          <p className="mt-2 text-slate-400">
+            Total Reports
+          </p>
+
+        </div>
+
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+
+          <Clock className="text-yellow-400" />
+
+          <h2 className="mt-5 text-4xl font-bold text-white">
+            {
+              reports.filter(
+                (r) => r.status === "Pending"
+              ).length
+            }
+          </h2>
+
+          <p className="mt-2 text-slate-400">
+            Pending
+          </p>
+
+        </div>
+
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+
+          <CheckCircle className="text-green-400" />
+
+          <h2 className="mt-5 text-4xl font-bold text-white">
+            {
+              reports.filter(
+                (r) => r.status === "Resolved"
+              ).length
+            }
+          </h2>
+
+          <p className="mt-2 text-slate-400">
+            Resolved
+          </p>
+
+        </div>
+
+        <div className="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+
+          <AlertTriangle className="text-red-400" />
+
+          <h2 className="mt-5 text-4xl font-bold text-white">
+            {
+              reports.filter(
+                (r) =>
+                  r.aiAnalysis?.severity ===
+                  "Critical"
+              ).length
+            }
+          </h2>
+
+          <p className="mt-2 text-slate-400">
+            Critical
+          </p>
+
+        </div>
+
+      </div>
+
+      {/* Search */}
+
+      <div className="mb-10 flex items-center rounded-2xl border border-slate-800 bg-slate-900 px-5 py-4">
+
+        <Search
+          size={20}
+          className="mr-3 text-slate-500"
+        />
+
+        <input
+          type="text"
+          placeholder="Search Reports..."
+          value={search}
+          onChange={(e) =>
+            setSearch(e.target.value)
+          }
+          className="w-full bg-transparent text-white placeholder:text-slate-500 outline-none"
+        />
+
+      </div>
+
+      {/* Reports */}
 
       <div className="grid gap-8">
 
-        {reports.map((report) => (
+        {reports
+          .filter((report) => {
+            return (
+              report.title
+                .toLowerCase()
+                .includes(search.toLowerCase()) ||
 
-  <div
-    key={report._id}
-    className="rounded-3xl border border-slate-800 bg-slate-900 p-6"
-  >
+              report.category
+                .toLowerCase()
+                .includes(search.toLowerCase())
+            );
+          })
+          .map((report) => (
 
-    <div className="flex gap-6">
+            <div
+              key={report._id}
+              className="rounded-3xl border border-slate-800 bg-slate-900 p-6 transition hover:border-emerald-500"
+            >
 
-      <img
-        src={report.image}
-        alt={report.title}
-        className="h-40 w-52 rounded-xl object-cover"
-      />
+              <div className="flex flex-col gap-6 lg:flex-row">
 
-      <div className="flex-1">
+                <img
+                  src={
+                    report.image ||
+                    "https://placehold.co/600x400?text=No+Image"
+                  }
+                  alt={report.title}
+                  className="h-56 w-full rounded-2xl object-cover lg:w-72"
+                />
 
-        <h2 className="text-2xl font-bold text-white">
-          {report.title}
-        </h2>
+                <div className="flex-1">
 
-        <p className="mt-3 text-slate-400">
-          {report.description}
-        </p>
+                  <h2 className="text-3xl font-bold text-white">
+                    {report.title}
+                  </h2>
 
-        {/* Badges */}
+                  <p className="mt-4 text-slate-400">
+                    {report.description}
+                  </p>
 
-        <div className="mt-5 flex flex-wrap gap-3">
+                  {/* Details */}
 
-          <span className="rounded-full bg-red-600 px-4 py-2 text-white">
-            {report.aiAnalysis.severity}
-          </span>
+                  <div className="mt-6 grid gap-3 md:grid-cols-2">
 
-          <span className="rounded-full bg-sky-600 px-4 py-2 text-white">
-            AQI {report.aqiData.value}
-          </span>
+                    <div className="flex items-center gap-2 text-slate-300">
 
-          <span className="rounded-full bg-emerald-600 px-4 py-2 text-white">
-            {report.status}
-          </span>
+                      <MapPin size={18} />
 
-        </div>
+                      {report.location?.address ||
+                        "Unknown"}
 
-        {/* Municipality Actions */}
+                    </div>
 
-        <div className="mt-6 flex flex-wrap gap-3">
+                    <div className="flex items-center gap-2 text-slate-300">
 
-          <button
-            onClick={() =>
-              handleStatus(report._id, "Verified")
-            }
-            className="rounded-xl bg-blue-600 px-5 py-2 text-white transition hover:bg-blue-700"
-          >
-            Verify
-          </button>
+                      <User size={18} />
 
-          <button
-            onClick={() =>
-              handleStatus(report._id, "In Progress")
-            }
-            className="rounded-xl bg-yellow-600 px-5 py-2 text-white transition hover:bg-yellow-700"
-          >
-            In Progress
-          </button>
+                      {report.user?.fullName ||
+                        "Citizen"}
 
-          <button
-            onClick={() =>
-              handleStatus(report._id, "Resolved")
-            }
-            className="rounded-xl bg-green-600 px-5 py-2 text-white transition hover:bg-green-700"
-          >
-            Resolve
-          </button>
+                    </div>
 
-          <button
-            onClick={() =>
-              handleStatus(report._id, "Rejected")
-            }
-            className="rounded-xl bg-red-600 px-5 py-2 text-white transition hover:bg-red-700"
-          >
-            Reject
-          </button>
+                    <div className="flex items-center gap-2 text-slate-300">
 
-        </div>
+                      <Calendar size={18} />
+
+                      {new Date(
+                        report.createdAt
+                      ).toLocaleDateString()}
+
+                    </div>
+
+                    <div className="flex items-center gap-2 text-cyan-400">
+
+                      <Wind size={18} />
+
+                      AQI :
+                      {" "}
+                      {report.aqiData?.value ||
+                        "N/A"}
+
+                    </div>
+
+                  </div>
+
+                  {/* Badges */}
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+
+                    <span className="rounded-full bg-red-600 px-4 py-2 text-white">
+                      {report.aiAnalysis?.severity ||
+                        "Unknown"}
+                    </span>
+
+                    <span className="rounded-full bg-sky-600 px-4 py-2 text-white">
+                      AQI{" "}
+                      {report.aqiData?.value ||
+                        "N/A"}
+                    </span>
+
+                    <span className="rounded-full bg-emerald-600 px-4 py-2 text-white">
+                      {report.status ||
+                        "Pending"}
+                    </span>
+
+                  </div>
+
+                  {/* Buttons */}
+
+                  <div className="mt-8 flex flex-wrap gap-3">
+
+                    <button
+                      onClick={() =>
+                        handleStatus(
+                          report._id,
+                          "Verified"
+                        )
+                      }
+                      className="rounded-xl bg-blue-600 px-5 py-3 text-white hover:bg-blue-700"
+                    >
+                      Verify
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleStatus(
+                          report._id,
+                          "In Progress"
+                        )
+                      }
+                      className="rounded-xl bg-yellow-600 px-5 py-3 text-white hover:bg-yellow-700"
+                    >
+                      In Progress
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleStatus(
+                          report._id,
+                          "Resolved"
+                        )
+                      }
+                      className="rounded-xl bg-green-600 px-5 py-3 text-white hover:bg-green-700"
+                    >
+                      Resolve
+                    </button>
+
+                    <button
+                      onClick={() =>
+                        handleStatus(
+                          report._id,
+                          "Rejected"
+                        )
+                      }
+                      className="rounded-xl bg-red-600 px-5 py-3 text-white hover:bg-red-700"
+                    >
+                      Reject
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            </div>
+
+          ))}
 
       </div>
 
-    </div>
-
-  </div>
-
-))}
-
-      </div>
-
-    </DashboardLayout>
+    </MunicipalityLayout>
   );
 }
 

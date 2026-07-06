@@ -1,7 +1,22 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { Trash2, MapPin, Wind } from "lucide-react";
-import { Link } from "react-router-dom";
+
+//import { Trash2, MapPin, Wind } from "lucide-react";
+import {
+  Trash2,
+  MapPin,
+  Wind,
+  ArrowLeft,
+  RefreshCw,
+  BarChart3,
+  Search,
+} from "lucide-react";
+
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
+
 import {
   getMyReports,
   deleteReport,
@@ -9,6 +24,7 @@ import {
 import { useAuth } from "../context/AuthContext";
 
 function MyReports() {
+    const navigate = useNavigate();
   const { token } = useAuth();
 
   const [reports, setReports] = useState([]);
@@ -30,6 +46,9 @@ function MyReports() {
       setLoading(false);
     }
   };
+  const refreshReports = () => {
+  loadReports();
+};
 
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this report?")) return;
@@ -59,9 +78,67 @@ function MyReports() {
   return (
     <section className="min-h-screen bg-slate-950 p-10">
 
-      <h1 className="mb-10 text-5xl font-bold text-white">
-        My Reports
-      </h1>
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+
+  <div>
+
+    <h1 className="text-5xl font-bold text-white">
+      My Reports
+    </h1>
+
+    <p className="mt-2 text-slate-400">
+      View and manage all pollution reports submitted by you.
+    </p>
+
+  </div>
+
+  <div className="flex flex-wrap gap-3">
+
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white hover:border-emerald-500"
+    >
+      <ArrowLeft size={18} />
+      Dashboard
+    </button>
+
+    <button
+      onClick={refreshReports}
+      className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-3 text-white hover:bg-emerald-700"
+    >
+      <RefreshCw size={18} />
+      Refresh
+    </button>
+
+    <button
+      onClick={() => navigate("/dashboard")}
+      className="flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-900 px-5 py-3 text-white"
+    >
+      <BarChart3 size={18} />
+      Statistics
+    </button>
+
+  </div>
+
+</div>
+<div className="mb-8">
+
+  <div className="flex items-center rounded-2xl bg-slate-900 px-5 py-4">
+
+    <Search
+      size={20}
+      className="mr-3 text-slate-500"
+    />
+
+    <input
+      type="text"
+      placeholder="Search reports..."
+      className="w-full bg-transparent text-white placeholder:text-slate-500 outline-none"
+    />
+
+  </div>
+
+</div>
 
       {reports.length === 0 ? (
         <div className="rounded-3xl border border-slate-800 bg-slate-900 p-10 text-center text-slate-400">

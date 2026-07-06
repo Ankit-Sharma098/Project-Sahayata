@@ -68,9 +68,13 @@ function Register() {
 
       <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-8">
 
-        <h1 className="mb-8 text-center text-4xl font-bold text-white">
+        <h1 className="mb-2 text-center text-4xl font-bold text-white">
           Create Account
         </h1>
+
+        <p className="mb-8 text-center text-slate-400">
+          Register as a Citizen
+        </p>
 
         {/* Full Name */}
 
@@ -87,7 +91,7 @@ function Register() {
         <input
           name="email"
           type="email"
-          placeholder="Email"
+          placeholder="Email Address"
           value={form.email}
           onChange={handleChange}
           className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
@@ -103,26 +107,13 @@ function Register() {
           className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
         />
 
-        {/* Role */}
+        {/* Hidden Role */}
 
-        <select
+        <input
+          type="hidden"
           name="role"
-          value={form.role}
-          onChange={handleChange}
-          className="mb-4 w-full rounded-xl bg-slate-800 p-4 text-white outline-none"
-        >
-          <option value="Citizen">
-            Citizen
-          </option>
-
-          <option value="Municipality">
-            Municipality
-          </option>
-
-          <option value="Admin">
-            Admin
-          </option>
-        </select>
+          value="Citizen"
+        />
 
         {/* Password */}
 
@@ -147,10 +138,9 @@ function Register() {
             : "Register"}
         </button>
 
-        {/* Login Link */}
+        {/* Login */}
 
         <p className="mt-6 text-center text-slate-400">
-
           Already have an account?
 
           <Link
@@ -159,7 +149,6 @@ function Register() {
           >
             Login
           </Link>
-
         </p>
 
       </div>

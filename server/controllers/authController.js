@@ -19,13 +19,12 @@ const generateToken = (userId) => {
 // ==========================
 export const registerUser = async (req, res) => {
   try {
-    const {
-      fullName,
-      email,
-      password,
-      phone,
-      role,
-    } = req.body;
+   const {
+  fullName,
+  email,
+  password,
+  phone,
+} = req.body;
 
     // Validation
     if (
@@ -54,12 +53,12 @@ export const registerUser = async (req, res) => {
 
     // Create User
     const user = await User.create({
-      fullName,
-      email,
-      password,
-      phone,
-      role,
-    });
+  fullName,
+  email,
+  password,
+  phone,
+  role: "Citizen",
+});
 
     // Remove Password
     const createdUser = await User.findById(

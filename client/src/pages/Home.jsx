@@ -4,6 +4,10 @@ import LiveStats from "../components/LiveStats";
 import Features from "../components/Features";
 import HowItWorks from "../components/HowItWorks";
 import RecentReports from "../components/RecentReports";
+import Testimonials from "../components/Testimonials";
+import FAQ from "../components/FAQ";
+import Contact from "../components/Contact";
+import Footer from "../components/Footer";
 
 function Home() {
   return (
@@ -12,10 +16,22 @@ function Home() {
 
       <main className="bg-slate-950">
         <Hero />
-        <LiveStats />
+
         <Features />
+
         <HowItWorks />
+
+        <LiveStats />
+
         <RecentReports />
+
+        <Testimonials />
+
+        <FAQ />
+
+        <Contact />
+
+        <Footer />
       </main>
     </>
   );

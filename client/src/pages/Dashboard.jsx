@@ -13,7 +13,10 @@ import toast from "react-hot-toast";
 
 import { useAuth } from "../context/AuthContext";
 import { getDashboardAnalytics } from "../services/dashboardService";
-import { getReports } from "../services/reportService";
+
+import {
+  getMyReports,
+} from "../services/reportService";
 
 import DashboardLayout from "../layouts/DashboardLayout";
 import AQIChart from "../components/AQIChart";
@@ -65,13 +68,17 @@ function Dashboard() {
   // Reports
   const loadReports = async () => {
     try {
-      const data = await getReports(token);
 
-      setReports(data.reports);
+        const data = await getMyReports(token);
+
+        setReports(data.reports);
+
     } catch (err) {
-      console.log(err);
+
+        console.log(err);
+
     }
-  };
+};
 
   const cards = [
     {

@@ -1,12 +1,18 @@
-import { Search } from "lucide-react";
+import { Search, Bell, BellOff } from "lucide-react";
+import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
-import NotificationBell from "./NotificationBell";
 
 function DashboardHeader() {
   const { user } = useAuth();
 
+  const [showNotifications, setShowNotifications] =
+    useState(false);
+
+  // Future me backend se yaha notifications aayenge
+  const notifications = [];
+
   return (
-    <header className="mb-10 flex items-center justify-between">
+    <header className="relative mb-10 flex items-center justify-between">
 
       {/* Left */}
       <div>
@@ -44,12 +50,67 @@ function DashboardHeader() {
         </div>
 
         {/* Notification Bell */}
-        <NotificationBell />
+        <div className="relative">
+
+          <button
+            onClick={() =>
+              setShowNotifications(!showNotifications)
+            }
+            className="rounded-xl bg-slate-900 p-3 transition hover:bg-slate-800"
+          >
+            <Bell className="text-white" />
+          </button>
+
+          {showNotifications && (
+
+            <div className="absolute right-0 top-16 z-50 w-80 rounded-2xl border border-slate-800 bg-slate-900 p-5 shadow-2xl">
+
+              <h3 className="mb-4 text-lg font-semibold text-white">
+                Notifications
+              </h3>
+
+              {notifications.length === 0 ? (
+
+                <div className="py-8 text-center">
+
+                  <BellOff
+                    size={45}
+                    className="mx-auto text-slate-500"
+                  />
+
+                  <p className="mt-4 text-slate-400">
+                    No notifications yet
+                  </p>
+
+                </div>
+
+              ) : (
+
+                notifications.map((item) => (
+
+                  <div
+                    key={item.id}
+                    className="mb-3 rounded-xl bg-slate-800 p-3 text-white"
+                  >
+                    {item.message}
+                  </div>
+
+                ))
+
+              )}
+
+            </div>
+
+          )}
+
+        </div>
 
         {/* User Avatar */}
         <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-600 text-lg font-bold text-white">
 
-          {user?.fullName?.charAt(0).toUpperCase() || "U"}
+          {user?.fullName
+            ?.charAt(0)
+            .toUpperCase() || "U"}
 
         </div>
 

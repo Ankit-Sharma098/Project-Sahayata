@@ -2,54 +2,161 @@ import AirReport from "../models/AirReport.js";
 
 export const getLeaderboard = async (req, res) => {
   try {
-
     const leaderboard = await AirReport.aggregate([
       {
         $group: {
-          _id: "$location.address",
+          _id: "$user",
 
           totalReports: {
             $sum: 1,
           },
 
-          averageAQI: {
-            $avg: "$aqiData.value",
+          verifiedReports: {
+            $sum: {
+              $cond: [
+                {
+                  $in: [
+                    "$status",
+                    ["Verified", "In Progress", "Resolved"],
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
           },
 
-          averageImpactScore: {
-            $avg: "$impactScore.score",
+          resolvedReports: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: [
+                    "$status",
+                    "Resolved",
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+
+          rejectedReports: {
+            $sum: {
+              $cond: [
+                {
+                  $eq: [
+                    "$status",
+                    "Rejected",
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+
+          highSeverity: {
+            $sum: {
+              $cond: [
+                {
+                  $in: [
+                    "$aiAnalysis.severity",
+                    ["High", "Critical"],
+                  ],
+                },
+                1,
+                0,
+              ],
+            },
+          },
+        },
+      },
+
+      {
+        $lookup: {
+          from: "users",
+          localField: "_id",
+          foreignField: "_id",
+          as: "user",
+        },
+      },
+
+      {
+        $unwind: "$user",
+      },
+
+      {
+        $addFields: {
+          points: {
+            $subtract: [
+              {
+                $add: [
+                  {
+                    $multiply: [
+                      "$totalReports",
+                      10,
+                    ],
+                  },
+                  {
+                    $multiply: [
+                      "$verifiedReports",
+                      20,
+                    ],
+                  },
+                  {
+                    $multiply: [
+                      "$resolvedReports",
+                      30,
+                    ],
+                  },
+                  {
+                    $multiply: [
+                      "$highSeverity",
+                      15,
+                    ],
+                  },
+                ],
+              },
+              {
+                $multiply: [
+                  "$rejectedReports",
+                  15,
+                ],
+              },
+            ],
           },
         },
       },
 
       {
         $sort: {
-          averageImpactScore: -1,
-        },
-      },
-
-      {
-        $project: {
-          _id: 0,
-
-          area: "$_id",
-
-          totalReports: 1,
-
-          averageAQI: {
-            $round: ["$averageAQI", 0],
-          },
-
-          averageImpactScore: {
-            $round: ["$averageImpactScore", 0],
-          },
+          points: -1,
         },
       },
     ]);
 
-    res.status(200).json({
+    const ranked = leaderboard.map((item, index) => ({
+      rank: index + 1,
+
+      id: item.user._id,
+
+      fullName: item.user.fullName,
+
+      profileImage: item.user.profileImage,
+
+      reports: item.totalReports,
+
+      verified: item.verifiedReports,
+
+      resolved: item.resolvedReports,
+
+      points: item.points,
+    }));
+
+    res.json({
       success: true,
-      leaderboard,
+      leaderboard: ranked,
     });
 
   } catch (error) {

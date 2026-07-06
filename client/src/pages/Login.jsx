@@ -1,13 +1,22 @@
 import { useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 import toast from "react-hot-toast";
+
 import { loginUser } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { setToken, setUser } = useAuth();
+
+  const redirectTo =
+    location.state?.from || "/dashboard";
 
   const [loading, setLoading] = useState(false);
 
@@ -17,14 +26,16 @@ function Login() {
   });
 
   const handleChange = (e) => {
-    setForm({
-      ...form,
+    setForm((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
-  const handleLogin = async () => {
-    if (!form.email || !form.password) {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    if (!form.email.trim() || !form.password.trim()) {
       return toast.error("Please fill all fields");
     }
 
@@ -34,12 +45,49 @@ function Login() {
       const data = await loginUser(form);
 
       setToken(data.token);
-
       setUser(data.user);
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
       toast.success("Login Successful");
 
-      navigate("/Dashboard");
+      // ===========================
+      // Role Based Redirect
+      // ===========================
+
+      if (data.user.role === "Citizen") {
+
+        navigate(redirectTo, {
+          replace: true,
+        });
+
+      } else if (
+        data.user.role === "Municipality"
+      ) {
+
+        navigate("/municipality", {
+          replace: true,
+        });
+
+      } else if (
+        data.user.role === "Admin"
+      ) {
+
+        navigate("/admin", {
+          replace: true,
+        });
+
+      } else {
+
+        navigate("/", {
+          replace: true,
+        });
+
+      }
 
     } catch (err) {
 
@@ -58,7 +106,10 @@ function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-slate-950 px-5">
 
-      <div className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-8">
+      <form
+        onSubmit={handleLogin}
+        className="w-full max-w-md rounded-3xl border border-slate-800 bg-slate-900 p-8"
+      >
 
         <h1 className="mb-8 text-center text-4xl font-bold text-white">
           Welcome Back 👋
@@ -83,7 +134,7 @@ function Login() {
         />
 
         <button
-          onClick={handleLogin}
+          type="submit"
           disabled={loading}
           className="w-full rounded-xl bg-emerald-500 py-4 font-semibold text-white transition hover:bg-emerald-600 disabled:opacity-50"
         >
@@ -94,13 +145,13 @@ function Login() {
           Don't have an account?{" "}
           <Link
             to="/register"
-            className="text-emerald-400"
+            className="text-emerald-400 hover:underline"
           >
             Register
           </Link>
         </p>
 
-      </div>
+      </form>
 
     </div>
   );

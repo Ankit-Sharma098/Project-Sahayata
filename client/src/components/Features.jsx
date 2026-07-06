@@ -48,7 +48,10 @@ const features = [
 
 function Features() {
   return (
-    <section className="bg-slate-950 py-24">
+    <section
+  id="features"
+  className="bg-slate-950 py-24"
+>
       <div className="mx-auto max-w-7xl px-6">
 
         <div className="text-center">

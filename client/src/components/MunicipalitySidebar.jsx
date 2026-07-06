@@ -1,23 +1,28 @@
 import {
   LayoutDashboard,
-  FilePlus2,
-  FolderOpen,
-  Trophy,
+  ClipboardList,
+  CheckCircle,
+  Clock,
+  AlertTriangle,
+  BarChart3,
+  Map,
   Bell,
   User,
   LogOut,
-  Brain,
 } from "lucide-react";
 
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-function Sidebar() {
-  const navigate = useNavigate();
+function MunicipalitySidebar() {
   const { logout } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     logout();
+
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
     navigate("/", {
       replace: true,
@@ -29,51 +34,59 @@ function Sidebar() {
   const links = [
     {
       name: "Dashboard",
+      path: "/municipality",
       icon: <LayoutDashboard size={20} />,
-      path: "/dashboard",
     },
     {
-      name: "Report Pollution",
-      icon: <FilePlus2 size={20} />,
-      path: "/report",
+      name: "Pending Reports",
+      path: "/municipality/pending",
+      icon: <ClipboardList size={20} />,
     },
     {
-      name: "My Reports",
-      icon: <FolderOpen size={20} />,
-      path: "/my-reports",
+      name: "Verified",
+      path: "/municipality/verified",
+      icon: <CheckCircle size={20} />,
     },
     {
-      name: "Leaderboard",
-      icon: <Trophy size={20} />,
-      path: "/leaderboard",
+      name: "In Progress",
+      path: "/municipality/progress",
+      icon: <Clock size={20} />,
     },
     {
-      name: "AI Recommendations",
-      icon: <Brain size={20} />,
-      path: "/recommendation",
+      name: "Critical",
+      path: "/municipality/critical",
+      icon: <AlertTriangle size={20} />,
+    },
+    {
+      name: "Analytics",
+      path: "/municipality/analytics",
+      icon: <BarChart3 size={20} />,
+    },
+    {
+      name: "Pollution Map",
+      path: "/municipality/map",
+      icon: <Map size={20} />,
     },
     {
       name: "Notifications",
+      path: "/municipality/notifications",
       icon: <Bell size={20} />,
-      path: "/notifications",
     },
     {
       name: "Profile",
-      icon: <User size={20} />,
       path: "/profile",
+      icon: <User size={20} />,
     },
   ];
 
   return (
-    <aside className="fixed left-0 top-0 flex h-screen w-72 flex-col border-r border-slate-800 bg-slate-950 p-6">
+    <aside className="fixed left-0 top-0 h-screen w-72 border-r border-slate-800 bg-slate-950 p-6">
 
-      {/* Logo */}
       <h1 className="mb-10 text-3xl font-bold text-emerald-400">
-        Project Sahayata
+        Municipality
       </h1>
 
-      {/* Navigation */}
-      <nav className="flex-1 space-y-2">
+      <nav className="space-y-2">
 
         {links.map((item) => (
           <NavLink
@@ -88,16 +101,15 @@ function Sidebar() {
             }
           >
             {item.icon}
-            <span>{item.name}</span>
+            {item.name}
           </NavLink>
         ))}
 
       </nav>
 
-      {/* Logout */}
       <button
         onClick={handleLogout}
-        className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-red-600 py-3 font-semibold text-white transition hover:bg-red-700"
+        className="absolute bottom-6 flex w-[225px] items-center justify-center gap-2 rounded-xl bg-red-600 py-3 text-white hover:bg-red-700"
       >
         <LogOut size={18} />
         Logout
@@ -107,4 +119,4 @@ function Sidebar() {
   );
 }
 
-export default Sidebar;
+export default MunicipalitySidebar;

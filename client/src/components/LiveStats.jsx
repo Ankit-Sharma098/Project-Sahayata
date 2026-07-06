@@ -47,15 +47,35 @@ function LiveStats() {
   ];
 
   return (
-    <section className="mx-auto grid max-w-7xl gap-6 px-6 py-16 md:grid-cols-2 lg:grid-cols-4">
+   <section
+  id="statistics"
+  className="bg-slate-950 py-24"
+>
+  <div className="mx-auto max-w-7xl px-6">
+
+    <div className="text-center">
+
+      <h2 className="text-5xl font-bold text-white">
+        Live Statistics
+      </h2>
+
+      <p className="mt-6 text-lg text-slate-400">
+        Real-time environmental analytics powered by Project Sahayata.
+      </p>
+
+    </div>
+
+    <div className="mt-16 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
       {cards.map((card) => (
         <div
           key={card.title}
-          className="rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-lg transition hover:border-emerald-500"
+          className="rounded-3xl border border-slate-800 bg-slate-900 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10"
         >
-          <div className="mb-4 flex items-center justify-between">
-            {card.icon}
-          </div>
+          <div className="mb-6 flex justify-center">
+  <div className="rounded-2xl bg-emerald-500/10 p-4">
+    {card.icon}
+  </div>
+</div>
 
           <h2 className="text-3xl font-bold text-white">
             {card.value}
@@ -66,7 +86,9 @@ function LiveStats() {
           </p>
         </div>
       ))}
-    </section>
+        </div>
+  </div>
+</section>
   );
 }
 

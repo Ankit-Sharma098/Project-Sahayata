@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getReports } from "../services/reportService";
+import { getMyReports } from "../services/reportService";
 import { useAuth } from "../context/AuthContext";
 
 function RecentReportsTable() {
@@ -13,13 +13,17 @@ function RecentReportsTable() {
   }, []);
 
   const loadReports = async () => {
-    try {
-      const data = await getReports(token);
-      setReports(data.reports.slice(0, 5));
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  try {
+    const data = await getMyReports(token);
+
+    setReports(data.reports.slice(0, 5));
+
+  } catch (error) {
+
+    console.log(error);
+
+  }
+};
 
   return (
     <div className="mt-10 rounded-3xl border border-slate-800 bg-slate-900 p-8">

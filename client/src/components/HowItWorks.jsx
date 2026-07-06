@@ -48,7 +48,10 @@ const steps = [
 
 function HowItWorks() {
   return (
-    <section className="bg-slate-900 py-24">
+    <section
+  id="how-it-works"
+  className="bg-slate-900 py-24"
+>
       <div className="mx-auto max-w-7xl px-6">
 
         <div className="text-center">
@@ -70,9 +73,9 @@ function HowItWorks() {
             return (
               <div
                 key={step.title}
-                className="relative rounded-3xl border border-slate-800 bg-slate-950 p-8 transition hover:border-emerald-500"
+                className="relative rounded-3xl border border-slate-800 bg-slate-950 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-emerald-500 hover:shadow-xl hover:shadow-emerald-500/10"
               >
-                <div className="absolute -top-5 left-6 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 font-bold text-white">
+                <div className="absolute -top-5 left-8 flex h-10 w-10 items-center justify-center rounded-full bg-emerald-500 font-bold text-white">
                   {index + 1}
                 </div>
 
